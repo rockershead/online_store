@@ -1,5 +1,5 @@
 const { Product } = require("../../models");
-//implememt search feature
+//implememt search feature,pagination
 const list = () => async (req, res, next) => {
   if (req.query) {
     console.log(req.query);

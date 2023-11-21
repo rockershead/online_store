@@ -29,7 +29,7 @@ const create = () => async (req, res, next) => {
     product
       .save()
       .then((result) => {
-        res.send(200).send(result);
+        res.status(200).send(result);
       })
       .catch((err) => {
         res.status(400).send(err);

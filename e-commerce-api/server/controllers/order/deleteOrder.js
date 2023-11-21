@@ -1,6 +1,6 @@
 const { Order } = require("../../models");
 const { ROLES } = require("../../../library/Constants");
-const update = () => async (req, res, next) => {
+const deleteOrder = () => async (req, res, next) => {
   const { orderId } = req.params;
 
   const order = await Order.findOne({ _id: orderId });
@@ -8,12 +8,12 @@ const update = () => async (req, res, next) => {
   const role = decodedToken["custom:role"];
   if (role == ROLES.SUPERADMIN) {
     if (order) {
-      const res = await Order.updateOne({ _id: orderId }, req.body);
-      res.status(200).send(res);
+      await Order.deleteOne({ _id: orderId });
+      res.status(200).send("Order deleted successfully");
     } else {
-      res.status(400).send("This order does not exist");
+      res.status(400).send("Order does not exist");
     }
   }
 };
 
-module.exports = { update };
+module.exports = { deleteOrder };

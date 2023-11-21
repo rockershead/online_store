@@ -4,7 +4,7 @@ const { create } = require("./create");
 const { list } = require("./list");
 const { show } = require("./show");
 const { update } = require("./update");
-const { deleteOrder } = require("./delete");
+const { deleteOrder } = require("./deleteOrder");
 
 module.exports = () => {
   const api = router();

@@ -1,6 +1,7 @@
 const { User } = require("../../models");
 const { ROLES } = require("../../../library/Constants");
 const list = () => async (req, res, next) => {
+  //pagination,search
   const decodedToken = res.locals.result;
   const role = decodedToken["custom:role"];
   if (role == ROLES.SUPERADMIN) {

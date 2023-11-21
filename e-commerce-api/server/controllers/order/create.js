@@ -1,33 +1,44 @@
-const { Order } = require("../../models");
+const { Order, Product } = require("../../models");
+const _ = require("lodash");
+
 const { uuid } = require("uuidv4");
 
 const create = () => async (req, res, next) => {
   const { items, currency } = req.body;
+  let total_cost = 0;
   const decodedToken = res.locals.result;
-  const user = {
+  const email = decodedToken.email;
+  const productIds = _.map(items, "productId");
+  /*const user = {
     email: decodedToken.email,
     name: decodedToken.name,
     phone_number: decodedToken.phone_number,
-  };
-  let total_cost = 0;
+  };*/
+
+  const products = await Product.find({ _id: { $in: productIds } });
+
+  const groupedProductsById = _.keyBy(products, "_id");
+
   items.forEach((item) => {
-    total_cost = total_cost + item.price;
+    const { quantity, productId } = item;
+    total_cost = total_cost + groupedProductsById[productId].price * quantity;
   });
 
   const order = new Order({
     items: items,
-    user: user,
+    email: email,
     currency: currency,
-    total_cost: total_cost,
+    totalCost: total_cost,
   });
 
   //order successful.can send email
   order
     .save()
     .then((result) => {
-      res.send(200).send(result);
+      res.status(200).send(result);
     })
     .catch((err) => {
+      console.log(err);
       res.status(400).send(err);
     });
 };

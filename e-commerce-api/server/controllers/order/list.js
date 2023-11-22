@@ -1,35 +1,40 @@
-const { Order } = require("../../models");
+const { Order, Product } = require("../../models");
 const { ROLES } = require("../../../library/Constants");
+const _ = require("lodash");
+
+async function populateProductInfo(orders) {
+  const allItems = _.flatMap(orders, "items");
+
+  const productIds = _.map(allItems, "productId");
+  const productDocs = await Product.find({ _id: { $in: productIds } });
+  const groupedDocsById = _.keyBy(productDocs, "_id");
+
+  orders.forEach((order) => {
+    order.items.forEach((item) => {
+      item.product = groupedDocsById[item.productId];
+    });
+  });
+
+  return orders;
+}
+
 //pagination
 const list = () => async (req, res, next) => {
+  const { page, pageSize } = req.query;
   const decodedToken = res.locals.result;
   const role = decodedToken["custom:role"];
-  if (req.query) {
-    console.log(req.query);
-  }
-  if (role == ROLES.SUPERADMIN) {
-    if (req.query) {
-      const result = await Order.find(req.query);
-      res.status(200).send(result);
-    } else {
-      try {
-        const orders = await Order.aggregate([
-          {
-            $lookup: {
-              from: "product",
-              localField: "items.productId",
-              foreignField: "_id",
-              as: "items.product",
-            },
-          },
-        ]);
 
-        res.status(200).send(orders);
-      } catch (err) {
-        res.status(500).send(err);
-      }
+  if (role == ROLES.SUPERADMIN) {
+    try {
+      const orders = await Order.find(req.query).lean().exec(); //so that can modify the objects or else cannot
+
+      const populatedOrdersWithProductInfo = await populateProductInfo(orders);
+
+      res.status(200).send(populatedOrdersWithProductInfo);
+    } catch (err) {
+      res.status(500).send(err);
     }
   }
 };
 
-module.exports = { list };
+module.exports = { list, populateProductInfo };

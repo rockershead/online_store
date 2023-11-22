@@ -1,4 +1,18 @@
 const { redisClient } = require("../../utils");
+const { Product } = require("../../models");
+const _ = require("lodash");
+
+async function populateProductInfo(items) {
+  const productIds = _.map(items, "productId");
+  const productDocs = await Product.find({ _id: { $in: productIds } });
+  const groupedDocsById = _.keyBy(productDocs, "_id");
+
+  items.forEach((item) => {
+    item.product = groupedDocsById[item.productId];
+  });
+
+  return items;
+}
 
 const list = () => async (req, res, next) => {
   //get the userId and set that id to the products
@@ -7,9 +21,10 @@ const list = () => async (req, res, next) => {
 
   const cart = await redisClient.get(email);
   if (cart) {
-    res.status(200).send(`${cart}`);
+    const populatedCart = await populateProductInfo(JSON.parse(cart));
+    res.status(200).send(populatedCart);
   } else {
-    res.status(400).send("User does not exist");
+    res.status(400).send("User Cart does not exist");
   }
 };
 

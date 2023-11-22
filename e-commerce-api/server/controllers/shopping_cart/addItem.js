@@ -1,7 +1,7 @@
 const { redisClient } = require("../../utils");
 
 const addItem = () => async (req, res, next) => {
-  const { item } = req.body; //is an array
+  const item = req.body; //is an object //{"productId":"","quantity":""}
   const decodedToken = res.locals.result;
   //get the email and set that email to the products
   const email = decodedToken.email;

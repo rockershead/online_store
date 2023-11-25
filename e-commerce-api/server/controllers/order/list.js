@@ -26,8 +26,13 @@ const list = () => async (req, res, next) => {
 
   if (role == ROLES.SUPERADMIN) {
     try {
-      const orders = await Order.find(req.query).lean().exec(); //so that can modify the objects or else cannot
-
+      const skip = (page - 1) * pageSize;
+      const orders = await Order.find(req.query)
+        .skip(skip)
+        .limit(pageSize)
+        .lean()
+        .exec(); //so that can modify the objects or else cannot
+      console.log(orders);
       const populatedOrdersWithProductInfo = await populateProductInfo(orders);
 
       res.status(200).send(populatedOrdersWithProductInfo);

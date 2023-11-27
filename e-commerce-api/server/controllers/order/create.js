@@ -1,5 +1,6 @@
 const { Order, Product } = require("../../models");
 const _ = require("lodash");
+const { sendEmail } = require("../../utils");
 
 const { uuid } = require("uuidv4");
 
@@ -28,14 +29,19 @@ const create = () => async (req, res, next) => {
     items: items,
     email: email,
     currency: currency,
-    totalCost: total_cost,
+    totalPaid: Number(total_cost.toFixed(2)),
   });
 
-  //order successful.can send email
   order
     .save()
-    .then((result) => {
+    .then(async (result) => {
       res.status(200).send(result);
+      await sendEmail(
+        [email],
+        "Successful Order",
+        "You have successfully created an order"
+      );
+      console.log("email sent");
     })
     .catch((err) => {
       console.log(err);

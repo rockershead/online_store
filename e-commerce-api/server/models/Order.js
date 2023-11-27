@@ -22,7 +22,7 @@ const Order = {
       type: [Item],
       required: true,
     },
-    totalCost: {
+    totalPaid: {
       type: Number,
       required: true,
     },

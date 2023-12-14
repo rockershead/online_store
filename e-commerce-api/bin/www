@@ -44,7 +44,7 @@ redisClient.on("error", (error) => console.error(`Error : ${error}`));
 redisClient
   .connect()
   .then(() => {
-    console.log("Redis connected");
+    console.log("Redis connected alr");
   })
   .catch((err) => console.log(err));
 

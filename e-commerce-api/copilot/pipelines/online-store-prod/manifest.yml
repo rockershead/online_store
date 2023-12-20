@@ -1,9 +1,9 @@
-# The manifest for the "online-new" pipeline.
+# The manifest for the "online-store-prod" pipeline.
 # This YAML file defines your pipeline: the source repository it tracks and the order of the environments to deploy to.
 # For more info: https://aws.github.io/copilot-cli/docs/manifest/pipeline/
 
 # The name of the pipeline.
-name: online-new
+name: online-store-prod
 
 # The version of the schema used in this template.
 version: 1
@@ -24,11 +24,6 @@ source:
 stages:
   - # The name of the environment.
     name: prod
-    deployments:
-      deploy-env:
-        template_path: infrastructure/prod.env.yml
-        template_config: infrastructure/prod.env.params.json
-        stack_name: online-store-app-new-prod
     # Optional: flag for manual approval action before deployment.
     # requires_approval: true
     # Optional: use test commands to validate this stage of your build.

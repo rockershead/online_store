@@ -45,6 +45,12 @@ async function getSigneds3Url(path, bucket) {
   return url;
 }
 
+async function getFiles3Url(path, bucket) {
+  const url = await getSigneds3Url(path, bucket);
+
+  return url;
+}
+
 async function uploadFile(path, bucket, body) {
   let _body = body;
   if (_body instanceof stream) {
@@ -60,9 +66,9 @@ async function uploadFile(path, bucket, body) {
   });
   await client.send(command);
 
-  const url = await getSigneds3Url(path, bucket);
+  //const url = await getSigneds3Url(path, bucket);
 
-  return url;
+  //return url;
 }
 
-module.exports = { uploadFile };
+module.exports = { uploadFile, getFiles3Url };

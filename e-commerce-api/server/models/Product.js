@@ -9,10 +9,7 @@ const Product = {
       type: String,
       required: true,
     },
-    productImageUrl: {
-      type: String,
-      required: true,
-    }, //will be a s3 url
+
     path: {
       type: String,
       required: true,

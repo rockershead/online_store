@@ -6,8 +6,6 @@ const {
   AmazonCognitoIdentity,
 } = require("../../utils");
 
-//only needed if verification code sent to the email.
-
 const resetPassword = () => async (req, res, next) => {
   const { email } = req.body; //in this case is email
 
@@ -29,7 +27,7 @@ const resetPassword = () => async (req, res, next) => {
 };
 
 const confirmPassword = () => async (req, res, next) => {
-  const { code, email, newPassword } = req.body; //username get from cognitoUser.username
+  const { code, email, newPassword } = req.body;
 
   var userData = {
     Username: email,
